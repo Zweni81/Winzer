@@ -1,0 +1,110 @@
+:root {
+  font-family: Georgia, "Times New Roman", serif;
+  color: #2b1d0e;
+  background: #f4ead6;
+}
+
+body {
+  margin: 0;
+}
+
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 3px double #7a4a1e;
+  padding-bottom: 10px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+h2 {
+  border-bottom: 1px solid #b89a6a;
+  padding-bottom: 4px;
+}
+
+.status {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  font-weight: bold;
+}
+
+button {
+  font-family: inherit;
+  background: #7a4a1e;
+  color: #f4ead6;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 10px;
+  cursor: pointer;
+  margin: 2px;
+}
+
+button:hover {
+  background: #96632e;
+}
+
+button.next {
+  background: #3f6b2f;
+  font-size: 1rem;
+}
+
+button.next:hover {
+  background: #4f8340;
+}
+
+.cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.parzelle,
+.wein {
+  background: #fff8ec;
+  border: 1px solid #c9b088;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.actions {
+  margin-top: 6px;
+}
+
+.muted {
+  color: #7a6a50;
+  font-style: italic;
+}
+
+.log {
+  max-height: 420px;
+  overflow-y: auto;
+  background: #fff8ec;
+  border: 1px solid #c9b088;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 0.9rem;
+}
+
+.log p {
+  margin: 4px 0;
+}
+
+.yearmark {
+  font-weight: bold;
+  color: #7a4a1e;
+}
