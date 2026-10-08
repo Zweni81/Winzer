@@ -117,3 +117,5 @@ button.next:hover {
   font-size: 0.85rem;
 }
 h3 { margin: 12px 0 4px; }
+.wechsel { margin-top: 8px; border-top: 1px dashed #c9b088; padding-top: 6px; }
+.wechsel .muted { margin-bottom: 2px; font-size: 0.85rem; }

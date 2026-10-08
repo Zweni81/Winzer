@@ -209,6 +209,7 @@ export const KOSTEN = {
   ernte: 4000,
   kellerei: 2000,
   barrique: 8000,
+  umstellung: 12000,
 };
 
 export function konkurrenzDrift(konkurrenz) {

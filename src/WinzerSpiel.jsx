@@ -57,6 +57,12 @@ export default function WinzerSpiel() {
     log(`Parzelle ${idx + 1} neu mit ${REBSORTEN[sorte].name} bepflanzt.`);
   }
 
+  function umpflanzen(idx, sorte) {
+    if (!bezahlen(KOSTEN.umstellung, "Rebsorten-Wechsel")) return;
+    updateParzelle(idx, () => ({ rebsorte: sorte, gesundheit: 100, geduengt: false, besch: true }));
+    log(`Parzelle ${idx + 1} auf ${REBSORTEN[sorte].name} umgestellt (Roden und Neupflanzung).`);
+  }
+
   function duengen(idx) {
     if (!bezahlen(KOSTEN.duenger, "Dünger")) return;
     updateParzelle(idx, (p) => ({ geduengt: true, gesundheit: Math.min(100, p.gesundheit + 10) }));
@@ -261,6 +267,18 @@ export default function WinzerSpiel() {
                   <div className="actions">
                     <button onClick={() => duengen(i)}>Düngen ({fmt(KOSTEN.duenger)})</button>
                     <button onClick={() => pflegen(i)}>Pflegen ({fmt(KOSTEN.pflege)})</button>
+                  </div>
+                  <div className="wechsel">
+                    <div className="muted">Rebsorte wechseln ({fmt(KOSTEN.umstellung)}):</div>
+                    <div className="actions">
+                      {Object.entries(REBSORTEN)
+                        .filter(([key]) => key !== p.rebsorte)
+                        .map(([key, sorte]) => (
+                          <button key={key} onClick={() => umpflanzen(i, key)}>
+                            {sorte.name}
+                          </button>
+                        ))}
+                    </div>
                   </div>
                 </div>
               ) : (
