@@ -5,51 +5,61 @@ export const REGIONEN = {
   mosel: {
     name: "Mosel",
     beschreibung: "Steile Schieferhänge, kühles Klima. Weltberühmter Riesling, wenig Platz für Mengen.",
+    events: [{ text: "Steile Hanglagen: Ihre Terrassenmauern müssen saniert werden.", geld: -7000 }, { text: "Eine Riesling-Verkostung in Bernkastel macht Ihren Betrieb berühmt.", preiseFaktor: 1.2 }],
     eignung: { muellerThurgau: 0.9, silvaner: 1.0, riesling: 1.3, spatburgunder: 0.7, weissburgunder: 0.95, chardonnay: 0.9, dornfelder: 0.75, merlot: 0.7, sangiovese: 0.65 },
   },
   rheinhessen: {
     name: "Rheinhessen",
     beschreibung: "Weite, milde Lagen mit fruchtbaren Böden. Ergiebig und vielseitig.",
+    events: [{ text: "Absatzförderung der Region: Ihr Betrieb wird auf einer Weinmesse präsentiert.", preiseFaktor: 1.15 }, { text: "Ein Großabnehmer aus dem Export springt ab – die Nachfrage sinkt.", preiseFaktor: 0.88 }],
     eignung: { muellerThurgau: 1.2, silvaner: 1.15, riesling: 1.0, spatburgunder: 1.0, weissburgunder: 1.15, chardonnay: 1.0, dornfelder: 1.05, merlot: 0.95, sangiovese: 0.85 },
   },
   franken: {
     name: "Franken",
     beschreibung: "Trockene Muschelkalkböden, kontinentales Klima. Bodenständige Weine, Silvaner-Land.",
+    events: [{ text: "Das Bocksbeutel-Jubiläum in Würzburg pusht die Nachfrage nach fränkischem Wein.", preiseFaktor: 1.2 }, { text: "Trockenheit im Steigerwald: Sie müssen künstlich bewässern.", geld: -4000 }],
     eignung: { muellerThurgau: 1.0, silvaner: 1.3, riesling: 1.0, spatburgunder: 0.85, weissburgunder: 1.1, chardonnay: 0.95, dornfelder: 0.95, merlot: 0.8, sangiovese: 0.7 },
   },
   ahr: {
     name: "Ahr",
     beschreibung: "Kleines, geschütztes Tal mit warmen Südhängen. Rotweinparadies.",
+    events: [{ text: "Ein Rotwein-Symposium an der Ahr zieht Kenner an – Spätburgunder gefragt!", preiseFaktor: 1.25 }, { text: "Hochwasser bedroht Ihre unteren Lagen, Schäden an Wegewerk.", geld: -6000 }],
     eignung: { muellerThurgau: 0.75, silvaner: 0.9, riesling: 0.85, spatburgunder: 1.35, weissburgunder: 1.0, chardonnay: 1.05, dornfelder: 1.1, merlot: 1.2, sangiovese: 0.95 },
   },
   baden: {
     name: "Baden",
     beschreibung: "Wärmste Region Deutschlands, vulkanische Kaiserstuhl-Lagen. Burgunder-Land.",
+    events: [{ text: "Ein Preis für Spätburgunder beim Badischen Weintage!", preiseFaktor: 1.2 }, { text: "Spätfrostgefahr am Kaiserstuhl: Frostschutzkerzen kosten ein Vermögen.", geld: -5500 }],
     eignung: { muellerThurgau: 1.0, silvaner: 1.05, riesling: 0.9, spatburgunder: 1.25, weissburgunder: 1.2, chardonnay: 1.25, dornfelder: 1.1, merlot: 1.1, sangiovese: 0.9 },
   },
   wuerttemberg: {
     name: "Württemberg",
     beschreibung: "Hügelige Keuper-Lagen mit schwäbischer Handwerkskunst. Land des Dornfelders.",
+    events: [{ text: "Der Besenwirtschaften-Tourismus läuft prächtig – Direktverkäufe boomen.", geld: 9000 }, { text: "Ein Fass-Diebstahl in Ihrer Kellerei – die Polizei rät zu einer Alarmanlage.", geld: -3500 }],
     eignung: { muellerThurgau: 1.0, silvaner: 1.0, riesling: 0.9, spatburgunder: 1.15, weissburgunder: 1.0, chardonnay: 0.95, dornfelder: 1.3, merlot: 1.05, sangiovese: 0.85 },
   },
   bordeaux: {
     name: "Bordeaux",
     beschreibung: "Gravierete Böden am Ufer der Gironde. Weltklasse-Cuveés aus Merlot und Cabernet.",
+    events: [{ text: "Einflussreicher Master of Wine besucht Ihr Château – Prestige steigt.", preiseFaktor: 1.3 }, { text: "Ein neuer Mitbewerber kauft die Parzelle nebenan – Konkurrenzdruck steigt.", konkurrenzDrift: 0.1 }],
     eignung: { muellerThurgau: 0.7, silvaner: 0.7, riesling: 0.65, spatburgunder: 1.05, weissburgunder: 0.95, chardonnay: 1.0, dornfelder: 0.8, merlot: 1.3, sangiovese: 0.8 },
   },
   toskana: {
     name: "Toskana",
     beschreibung: "Sanfte Hügel, viel Sonne, mediterranes Klima. Heimat des Sangiovese.",
+    events: [{ text: "Ein Hollywood-Star wird auf Ihrem Gut gesichtet – Ihre Weine sind plötzlich hip.", preiseFaktor: 1.3 }, { text: "Extreme Hitze: Viele Beeren versengt, Ertragsverlust droht.", geld: -6000 }],
     eignung: { muellerThurgau: 0.7, silvaner: 0.65, riesling: 0.6, spatburgunder: 1.0, weissburgunder: 0.9, chardonnay: 1.05, dornfelder: 0.9, merlot: 1.2, sangiovese: 1.4 },
   },
   champagne: {
     name: "Champagne",
     beschreibung: "Kalkreiche Böden, kühles Klima im Norden Frankreichs. Nur die feinsten Trauben werden zu Schaumwein.",
+    events: [{ text: "Eine luxuriöse Hochzeit auf Ihrem Gut bestellt 2000 Flaschen extra.", geld: 12000 }, { text: "Streik der Rebstock-Arbeiter verzögert die Lese – Mehrkosten.", geld: -5000 }],
     eignung: { muellerThurgau: 0.9, silvaner: 0.8, riesling: 0.85, spatburgunder: 1.2, weissburgunder: 1.25, chardonnay: 1.3, dornfelder: 0.7, merlot: 0.8, sangiovese: 0.6 },
   },
   elsass: {
     name: "Elsass",
     beschreibung: "Geschützte Lagen im Regenschatten der Vogesen. Kraftvolle Weine aus Reben und Burgundern.",
+    events: [{ text: "Eine Route-des-Vins-Dokumentation im TV zeigt Ihr Gut!", preiseFaktor: 1.25 }, { text: "Chemieunfall flussaufwärts beeinträchtigt Ihren Biosiegel-Status.", geld: -4500 }],
     eignung: { muellerThurgau: 0.95, silvaner: 1.1, riesling: 1.25, spatburgunder: 1.1, weissburgunder: 1.25, chardonnay: 1.15, dornfelder: 0.8, merlot: 0.85, sangiovese: 0.7 },
   },
 };
@@ -72,15 +82,31 @@ export const REBSORTEN = {
 
 export const BODENQUALITAET = ["schlecht", "mittel", "gut", "hervorragend"];
 
-export function neueParzelle(boden, rebsorte) {
+export function neueParzelle(boden, rebsorte, groesse = 1) {
   return {
     boden,
     rebsorte,
+    groesse,
     gesundheit: 100,
     qualitaet: 0,
     geduengt: false,
     besch: true,
   };
+}
+
+export function parzellenPreis(boden, groesse) {
+  const bodenPreis = [18000, 26000, 36000, 50000][boden] ?? 26000;
+  return Math.round((bodenPreis * groesse * zufall(0.9, 1.15)) / 500) * 500;
+}
+
+export function neuesParzellenAngebot() {
+  const boden = Math.floor(Math.random() * 4);
+  const groesse = Math.round(zufall(0.8, 3.2) * 10) / 10;
+  return { id: Math.random().toString(36).slice(2), boden, groesse, preis: parzellenPreis(boden, groesse) };
+}
+
+export function neueAngebote(anzahl = 3) {
+  return Array.from({ length: anzahl }, () => neuesParzellenAngebot());
 }
 
 function zufall(min, max) {
@@ -90,7 +116,7 @@ function zufall(min, max) {
 export function ernteErtrag(parzelle, wetter, region) {
   if (!parzelle.rebsorte) return 0;
   const sorte = REBSORTEN[parzelle.rebsorte];
-  const basis = 10000 * sorte.ertrag;
+  const basis = 10000 * sorte.ertrag * (parzelle.groesse ?? 1);
   const gesundheitsFaktor = parzelle.gesundheit / 100;
   const bodenFaktor = 0.7 + parzelle.boden * 0.15;
   const duengeFaktor = parzelle.geduengt ? 1.15 : 0.9;
@@ -135,7 +161,7 @@ export function neuerMarktFaktor() {
   return zufall(0.85, 1.2);
 }
 
-export function neuesEvent() {
+export function neuesEvent(regionKey) {
   const events = [
     null,
     null,
@@ -145,7 +171,13 @@ export function neuesEvent() {
     { text: "Sturmschaden am Wirtschaftsgebäude – Reparaturkosten.", geld: -5000 },
     { text: "Fördermittel für ökologischen Weinbau genehmigt!", geld: 6000 },
   ];
-  return events[Math.floor(Math.random() * events.length)];
+  const allgemeine = events[Math.floor(Math.random() * events.length)];
+  const region = REGIONEN[regionKey];
+  if (region?.events && Math.random() < 0.35) {
+    const regionales = region.events[Math.floor(Math.random() * region.events.length)];
+    return { ...regionales };
+  }
+  return allgemeine;
 }
 
 export function initialSpielstand(regionKey) {
@@ -155,14 +187,13 @@ export function initialSpielstand(regionKey) {
     jahr: STARTJAHR,
     kapital: STARTKAPITAL,
     repututation: 50,
-    parzellen: [
-      neueParzelle(2, "muellerThurgau"),
-      neueParzelle(1, "muellerThurgau"),
-      neueParzelle(1, null),
-    ],
+    konkurrenz: 1,
+    parzellen: [neueParzelle(1, "muellerThurgau", 1)],
+    angebote: neueAngebote(),
     keller: [],
     log: [
-      `Willkommen im Jahrgang ${STARTJAHR}! Sie eröffnen Ihr Weingut in ${region ? region.name : "Ihrer Region"} und übernehmen den Betrieb Ihres Onkels.`,
+      `Willkommen im Jahrgang ${STARTJAHR}! Sie eröffnen Ihr Weingut in ${region ? region.name : "Ihrer Region"} mit einer kleinen Parzelle von Ihrem Onkel.`,
+      "Neue Parzellen können im Weinberg gekauft werden – Größe und Bodenqualität bestimmen den Preis.",
     ],
     wetter: neuesWetter(),
     letztesEvent: null,
@@ -177,4 +208,25 @@ export const KOSTEN = {
   pflege: 1500,
   ernte: 4000,
   kellerei: 2000,
+  barrique: 8000,
 };
+
+export function konkurrenzDrift(konkurrenz) {
+  const drift = zufall(-0.08, 0.08);
+  return Math.max(0.6, Math.min(1.4, konkurrenz + drift));
+}
+
+export function barriqueVerfuegbar(wein) {
+  if (wein.barrique) return false;
+  return wein.flaschen >= 500;
+}
+
+export function barriqueAusbaun(wein) {
+  const qualitaetsBonus = wein.qualitaet >= 70 ? 15 : wein.qualitaet >= 50 ? 10 : 5;
+  return {
+    ...wein,
+    barrique: true,
+    qualitaet: Math.min(100, wein.qualitaet + qualitaetsBonus),
+    barriqueFaktor: 1.25,
+  };
+}
