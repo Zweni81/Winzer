@@ -275,9 +275,11 @@ function zufallZwischen(min, max) {
 }
 
 function eignungText(faktor) {
-  if (faktor >= 1.25) return "hervorragend ⭐";
-  if (faktor >= 1.1) return "sehr gut";
-  if (faktor >= 0.95) return "gut";
-  if (faktor >= 0.85) return "mäßig";
+  if (faktor >= 1.3) return "hervorragend ⭐";
+  if (faktor >= 1.15) return "sehr gut";
+  if (faktor >= 1.0) return "gut";
+  if (faktor >= 0.9) return "brauchbar";
+  if (faktor >= 0.8) return "mäßig";
+  if (faktor >= 0.7) return "schwach";
   return "ungeeignet";
 }
