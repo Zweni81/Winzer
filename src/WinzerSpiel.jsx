@@ -12,6 +12,9 @@ import {
   neuesEvent,
   neuerMarktFaktor,
   initialSpielstand,
+  konkurrenzDrift,
+  barriqueVerfuegbar,
+  barriqueAusbaun,
 } from "./game.js";
 
 function fmt(geld) {
@@ -68,10 +71,17 @@ export default function WinzerSpiel() {
     setS((v) => {
       const neu = { ...v, parzellen: v.parzellen.map((p) => ({ ...p })) };
       const wetter = neuesWetter();
-      const ereignis = neuesEvent();
+      const ereignis = neuesEvent(neu.region);
       const eintraege = [];
       let kapital = neu.kapital;
       let keller = [...neu.keller];
+      let konkurrenz = konkurrenzDrift(neu.konkurrenz);
+      if (ereignis?.konkurrenzDrift) {
+        konkurrenz = Math.max(0.6, Math.min(1.4, konkurrenz + ereignis.konkurrenzDrift));
+      }
+      eintraege.push(
+        `Konkurrenzsituation: ${konkurrenzText(konkurrenz)} (Preisniveau ${(100 / konkurrenz).toFixed(0)} %)`
+      );
 
       for (let i = 0; i < neu.parzellen.length; i++) {
         const p = neu.parzellen[i];
@@ -140,10 +150,20 @@ export default function WinzerSpiel() {
         keller,
         wetter,
         letztesEvent: ereignis,
+        konkurrenz,
         log: [...v.log, `— Jahr ${neu.jahr + 1} —`, ...eintraege],
         pleite,
       };
     });
+  }
+
+  function barrique(id) {
+    if (!bezahlen(KOSTEN.barrique, "Barrique-Ausbau")) return;
+    setS((v) => ({
+      ...v,
+      keller: v.keller.map((w) => (w.id === id ? barriqueAusbaun(w) : w)),
+      log: [...v.log, `Wein ${id} im Barrique-Fass ausgebaut – Qualität gestiegen, späterer Verkaufspreis +25 %.`],
+    }));
   }
 
   function verkaufen(id, preis) {
@@ -206,6 +226,7 @@ export default function WinzerSpiel() {
         <div className="status">
           <span>Region: {REGIONEN[s.region]?.name}</span>
           <span>Jahr: {s.jahr}</span>
+          <span>Konkurrenz: {konkurrenzText(s.konkurrenz ?? 1)}</span>
           <span>Kapital: {fmt(s.kapital)}</span>
           <button className="next" onClick={jahrWeiter}>Jahr fortführen ▶</button>
         </div>
@@ -244,15 +265,26 @@ export default function WinzerSpiel() {
           <h2>Weinkeller</h2>
           {s.keller.length === 0 && <p className="muted">Noch keine Weine im Keller.</p>}
           {s.keller.map((w) => {
-            const preis = marktPreis(w.rebsorte, w.qualitaet, w.jahrgang, s.jahr, w.marktFaktor) * (w.preisFaktor ?? 1);
+            const preis =
+              marktPreis(w.rebsorte, w.qualitaet, w.jahrgang, s.jahr, w.marktFaktor) *
+              (w.preisFaktor ?? 1) *
+              (w.barriqueFaktor ?? 1) /
+              (s.konkurrenz ?? 1);
             return (
               <div key={w.id} className="wein">
                 <strong>{REBSORTEN[w.rebsorte].name} {w.jahrgang}</strong>
-                <div>Qualität: {w.qualitaet} · {w.flaschen.toLocaleString("de-DE")} Flaschen</div>
+                <div>Qualität: {w.qualitaet} · {w.flaschen.toLocaleString("de-DE")} Flaschen{w.barrique ? " · Barrique" : ""}</div>
                 <div>Aktueller Marktpreis: ~{preis.toFixed(2)} €/Flasche</div>
-                <button onClick={() => verkaufen(w.id, preis)}>
-                  Verkaufen für {fmt(Math.round(preis * w.flaschen))}
-                </button>
+                <div className="actions">
+                  {barriqueVerfuegbar(w) && (
+                    <button onClick={() => barrique(w.id)}>
+                      Barrique-Ausbau ({fmt(KOSTEN.barrique)})
+                    </button>
+                  )}
+                  <button onClick={() => verkaufen(w.id, preis)}>
+                    Verkaufen für {fmt(Math.round(preis * w.flaschen))}
+                  </button>
+                </div>
               </div>
             );
           })}
@@ -274,6 +306,14 @@ export default function WinzerSpiel() {
 
 function zufallZwischen(min, max) {
   return Math.random() * (max - min) + min;
+}
+
+function konkurrenzText(k) {
+  if (k >= 1.25) return "sehr stark";
+  if (k >= 1.1) return "stark";
+  if (k >= 0.95) return "normal";
+  if (k >= 0.8) return "entspannt";
+  return "schwach";
 }
 
 function eignungText(faktor) {
