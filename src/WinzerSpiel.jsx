@@ -15,6 +15,8 @@ import {
   konkurrenzDrift,
   barriqueVerfuegbar,
   barriqueAusbaun,
+  neueParzelle,
+  neueAngebote,
 } from "./game.js";
 
 function fmt(geld) {
@@ -151,10 +153,23 @@ export default function WinzerSpiel() {
         wetter,
         letztesEvent: ereignis,
         konkurrenz,
+        angebote: neueAngebote(),
         log: [...v.log, `— Jahr ${neu.jahr + 1} —`, ...eintraege],
         pleite,
       };
     });
+  }
+
+  function parzelleKaufen(angebotId) {
+    const angebot = s.angebote.find((a) => a.id === angebotId);
+    if (!angebot) return;
+    if (!bezahlen(angebot.preis, "Parzellenkauf")) return;
+    setS((v) => ({
+      ...v,
+      parzellen: [...v.parzellen, neueParzelle(angebot.boden, null, angebot.groesse)],
+      angebote: v.angebote.filter((a) => a.id !== angebotId),
+      log: [...v.log, `Neue Parzelle gekauft: ${angebot.groesse.toLocaleString("de-DE")} ha, ${BODENQUALITAET[angebot.boden]}er Boden (${fmt(angebot.preis)}).`],
+    }));
   }
 
   function barrique(id) {
@@ -238,7 +253,7 @@ export default function WinzerSpiel() {
           {s.parzellen.map((p, i) => (
             <div key={i} className="parzelle">
               <strong>Parzelle {i + 1}</strong>{" "}
-              <em>({BODENQUALITAET[p.boden]}er Boden)</em>
+              <em>({(p.groesse ?? 1).toLocaleString("de-DE")} ha · {BODENQUALITAET[p.boden]}er Boden)</em>
               {p.rebsorte ? (
                 <div>
                   <div>Rebsorte: {REBSORTEN[p.rebsorte].name}</div>
@@ -257,6 +272,20 @@ export default function WinzerSpiel() {
                   ))}
                 </div>
               )}
+            </div>
+          ))}
+
+          <h3>Parzellen kaufen</h3>
+          {s.angebote.length === 0 && <p className="muted">Zurzeit sind keine Parzellen im Angebot. Nächstes Jahr gibt es neue Angebote.</p>}
+          {s.angebote.map((a) => (
+            <div key={a.id} className="parzelle">
+              <strong>{a.groesse.toLocaleString("de-DE")} ha</strong>{" "}
+              <em>({BODENQUALITAET[a.boden]}er Boden)</em>
+              <div className="actions">
+                <button onClick={() => parzelleKaufen(a.id)} disabled={s.kapital < a.preis}>
+                  Kaufen für {fmt(a.preis)}
+                </button>
+              </div>
             </div>
           ))}
         </section>

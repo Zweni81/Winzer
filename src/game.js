@@ -82,15 +82,31 @@ export const REBSORTEN = {
 
 export const BODENQUALITAET = ["schlecht", "mittel", "gut", "hervorragend"];
 
-export function neueParzelle(boden, rebsorte) {
+export function neueParzelle(boden, rebsorte, groesse = 1) {
   return {
     boden,
     rebsorte,
+    groesse,
     gesundheit: 100,
     qualitaet: 0,
     geduengt: false,
     besch: true,
   };
+}
+
+export function parzellenPreis(boden, groesse) {
+  const bodenPreis = [18000, 26000, 36000, 50000][boden] ?? 26000;
+  return Math.round((bodenPreis * groesse * zufall(0.9, 1.15)) / 500) * 500;
+}
+
+export function neuesParzellenAngebot() {
+  const boden = Math.floor(Math.random() * 4);
+  const groesse = Math.round(zufall(0.8, 3.2) * 10) / 10;
+  return { id: Math.random().toString(36).slice(2), boden, groesse, preis: parzellenPreis(boden, groesse) };
+}
+
+export function neueAngebote(anzahl = 3) {
+  return Array.from({ length: anzahl }, () => neuesParzellenAngebot());
 }
 
 function zufall(min, max) {
@@ -100,7 +116,7 @@ function zufall(min, max) {
 export function ernteErtrag(parzelle, wetter, region) {
   if (!parzelle.rebsorte) return 0;
   const sorte = REBSORTEN[parzelle.rebsorte];
-  const basis = 10000 * sorte.ertrag;
+  const basis = 10000 * sorte.ertrag * (parzelle.groesse ?? 1);
   const gesundheitsFaktor = parzelle.gesundheit / 100;
   const bodenFaktor = 0.7 + parzelle.boden * 0.15;
   const duengeFaktor = parzelle.geduengt ? 1.15 : 0.9;
@@ -172,14 +188,12 @@ export function initialSpielstand(regionKey) {
     kapital: STARTKAPITAL,
     repututation: 50,
     konkurrenz: 1,
-    parzellen: [
-      neueParzelle(2, "muellerThurgau"),
-      neueParzelle(1, "muellerThurgau"),
-      neueParzelle(1, null),
-    ],
+    parzellen: [neueParzelle(1, "muellerThurgau", 1)],
+    angebote: neueAngebote(),
     keller: [],
     log: [
-      `Willkommen im Jahrgang ${STARTJAHR}! Sie eröffnen Ihr Weingut in ${region ? region.name : "Ihrer Region"} und übernehmen den Betrieb Ihres Onkels.`,
+      `Willkommen im Jahrgang ${STARTJAHR}! Sie eröffnen Ihr Weingut in ${region ? region.name : "Ihrer Region"} mit einer kleinen Parzelle von Ihrem Onkel.`,
+      "Neue Parzellen können im Weinberg gekauft werden – Größe und Bodenqualität bestimmen den Preis.",
     ],
     wetter: neuesWetter(),
     letztesEvent: null,
