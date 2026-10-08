@@ -1,6 +1,8 @@
 import { useState } from "react";
 import {
   REBSORTEN,
+  REGIONEN,
+  regionEignung,
   BODENQUALITAET,
   KOSTEN,
   ernteErtrag,
@@ -16,7 +18,11 @@ function fmt(geld) {
 }
 
 export default function WinzerSpiel() {
-  const [s, setS] = useState(initialSpielstand);
+  const [s, setS] = useState(null);
+
+  function starte(regionKey) {
+    setS(initialSpielstand(regionKey));
+  }
 
   function log(text) {
     setS((v) => ({ ...v, log: [...v.log, text] }));
@@ -86,8 +92,8 @@ export default function WinzerSpiel() {
         }
 
         if (p.gesundheit > 20) {
-          const ertrag = ernteErtrag(p, wetter);
-          const qualitaet = weinQualitaet(p, wetter);
+          const ertrag = ernteErtrag(p, wetter, neu.region);
+          const qualitaet = weinQualitaet(p, wetter, neu.region);
           const most = Math.round(ertrag / 6);
           const flaschen = Math.round(most * 1.33);
           if (flaschen > 0) {
@@ -153,7 +159,32 @@ export default function WinzerSpiel() {
   }
 
   function neuStart() {
-    setGewaehlt(null);
+    setS(null);
+  }
+
+  if (!s) {
+    return (
+      <div className="panel">
+        <h1>🍇 Der Winzer</h1>
+        <p>Wählen Sie eine Region, in der Sie Ihr Weingut eröffnen. Die Region bestimmt, wie gut die verschiedenen Rebsorten gedeihen.</p>
+        {Object.entries(REGIONEN).map(([key, region]) => (
+          <div key={key} className="parzelle">
+            <strong>{region.name}</strong>
+            <p className="muted">{region.beschreibung}</p>
+            <div className="actions">
+              {Object.entries(REBSORTEN).map(([sortenKey, sorte]) => (
+                <span key={sortenKey} className="eignung">
+                  {sorte.name}: {eignungText(regionEignung(key, sortenKey))}
+                </span>
+              ))}
+            </div>
+            <div>
+              <button onClick={() => starte(key)}>Weingut in {region.name} eröffnen</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   }
 
   if (s.pleite) {
@@ -171,6 +202,7 @@ export default function WinzerSpiel() {
       <header>
         <h1>🏡 Der Winzer</h1>
         <div className="status">
+          <span>Region: {REGIONEN[s.region]?.name}</span>
           <span>Jahr: {s.jahr}</span>
           <span>Kapital: {fmt(s.kapital)}</span>
           <button className="next" onClick={jahrWeiter}>Jahr fortführen ▶</button>
@@ -240,4 +272,12 @@ export default function WinzerSpiel() {
 
 function zufallZwischen(min, max) {
   return Math.random() * (max - min) + min;
+}
+
+function eignungText(faktor) {
+  if (faktor >= 1.25) return "hervorragend ⭐";
+  if (faktor >= 1.1) return "sehr gut";
+  if (faktor >= 0.95) return "gut";
+  if (faktor >= 0.85) return "mäßig";
+  return "ungeeignet";
 }

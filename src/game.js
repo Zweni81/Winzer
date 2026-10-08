@@ -1,6 +1,33 @@
 export const STARTKAPITAL = 50000;
 export const STARTJAHR = 1990;
 
+export const REGIONEN = {
+  mosel: {
+    name: "Mosel",
+    beschreibung: "Steile Schieferhänge, kühles Klima. Weltberühmter Riesling, wenig Platz für Mengen.",
+    eignung: { muellerThurgau: 0.9, silvaner: 1.0, riesling: 1.3, spatburgunder: 0.7 },
+  },
+  rheinhessen: {
+    name: "Rheinhessen",
+    beschreibung: "Weite, milde Lagen mit fruchtbaren Böden. Ergiebig und vielseitig.",
+    eignung: { muellerThurgau: 1.2, silvaner: 1.15, riesling: 1.0, spatburgunder: 1.0 },
+  },
+  franken: {
+    name: "Franken",
+    beschreibung: "Trockene Muschelkalkböden, kontinentales Klima. Bodenständige Weine, Silvaner-Land.",
+    eignung: { muellerThurgau: 1.0, silvaner: 1.3, riesling: 1.0, spatburgunder: 0.85 },
+  },
+  ahr: {
+    name: "Ahr",
+    beschreibung: "Kleines, geschütztes Tal mit warmen Südhängen. Rotweinparadies.",
+    eignung: { muellerThurgau: 0.75, silvaner: 0.9, riesling: 0.85, spatburgunder: 1.35 },
+  },
+};
+
+export function regionEignung(regionKey, rebsorte) {
+  return REGIONEN[regionKey]?.eignung[rebsorte] ?? 1;
+}
+
 export const REBSORTEN = {
   muellerThurgau: { name: "Müller-Thurgau", preisFaktor: 1.0, ertrag: 1.0, anspruch: 1 },
   silvaner: { name: "Silvaner", preisFaktor: 1.2, ertrag: 0.85, anspruch: 2 },
@@ -25,7 +52,7 @@ function zufall(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-export function ernteErtrag(parzelle, wetter) {
+export function ernteErtrag(parzelle, wetter, region) {
   if (!parzelle.rebsorte) return 0;
   const sorte = REBSORTEN[parzelle.rebsorte];
   const basis = 10000 * sorte.ertrag;
@@ -33,17 +60,19 @@ export function ernteErtrag(parzelle, wetter) {
   const bodenFaktor = 0.7 + parzelle.boden * 0.15;
   const duengeFaktor = parzelle.geduengt ? 1.15 : 0.9;
   const wetterFaktor = wetter.ertragsFaktor;
+  const regionFaktor = region ? regionEignung(region, parzelle.rebsorte) : 1;
   const schwank = zufall(0.85, 1.15);
-  return Math.max(0, Math.round(basis * gesundheitsFaktor * bodenFaktor * duengeFaktor * wetterFaktor * schwank));
+  return Math.max(0, Math.round(basis * gesundheitsFaktor * bodenFaktor * duengeFaktor * wetterFaktor * regionFaktor * schwank));
 }
 
-export function weinQualitaet(parzelle, wetter) {
+export function weinQualitaet(parzelle, wetter, region) {
   const sorte = REBSORTEN[parzelle.rebsorte];
   const gesundheit = parzelle.gesundheit;
   const pflege = (parzelle.besch ? 10 : 0) + (parzelle.geduengt ? 5 : 0);
   const basis = 40 + parzelle.boden * 8 + (gesundheit - 70) * 0.4 + pflege;
   const wetterBonus = wetter.qualitaetsFaktor * 10 - 5;
-  return Math.max(10, Math.min(100, Math.round(basis * zufall(0.9, 1.1) * (sorte.preisFaktor * 0.4 + 0.7) + wetterBonus)));
+  const regionBonus = region ? (regionEignung(region, parzelle.rebsorte) - 1) * 25 : 0;
+  return Math.max(10, Math.min(100, Math.round(basis * zufall(0.9, 1.1) * (sorte.preisFaktor * 0.4 + 0.7) + wetterBonus + regionBonus)));
 }
 
 const WETTER = [
@@ -75,14 +104,16 @@ export function neuesEvent() {
     { text: "Ein Weinkritiker lobt Ihren Betrieb! Die Nachfrage steigt.", preiseFaktor: 1.25 },
     { text: "Konkurrenz aus Übersee drückt die Preise.", preiseFaktor: 0.85 },
     { text: "Ein Weinfest in der Region bringt Ihnen Direktverkäufe.", geld: 8000 },
-    { text: "Sturmschaden am Wirtschaftgebäude – Reparaturkosten.", geld: -5000 },
+    { text: "Sturmschaden am Wirtschaftsgebäude – Reparaturkosten.", geld: -5000 },
     { text: "Fördermittel für ökologischen Weinbau genehmigt!", geld: 6000 },
   ];
   return events[Math.floor(Math.random() * events.length)];
 }
 
-export function initialSpielstand() {
+export function initialSpielstand(regionKey) {
+  const region = REGIONEN[regionKey];
   return {
+    region: regionKey,
     jahr: STARTJAHR,
     kapital: STARTKAPITAL,
     repututation: 50,
@@ -92,7 +123,9 @@ export function initialSpielstand() {
       neueParzelle(1, null),
     ],
     keller: [],
-    log: ["Willkommen im Jahrgang 1990! Sie übernehmen den Weinbaubetrieb Ihres Onkels."],
+    log: [
+      `Willkommen im Jahrgang ${STARTJAHR}! Sie eröffnen Ihr Weingut in ${region ? region.name : "Ihrer Region"} und übernehmen den Betrieb Ihres Onkels.`,
+    ],
     wetter: neuesWetter(),
     letztesEvent: null,
     pleite: false,
