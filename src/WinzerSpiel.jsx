@@ -10,6 +10,7 @@ import {
   marktPreis,
   neuesWetter,
   neuesEvent,
+  neuerMarktFaktor,
   initialSpielstand,
 } from "./game.js";
 
@@ -103,6 +104,7 @@ export default function WinzerSpiel() {
               jahrgang: neu.jahr,
               qualitaet,
               flaschen,
+              marktFaktor: neuerMarktFaktor(),
               bezahltpreis: null,
             });
             eintraege.push(
@@ -242,7 +244,7 @@ export default function WinzerSpiel() {
           <h2>Weinkeller</h2>
           {s.keller.length === 0 && <p className="muted">Noch keine Weine im Keller.</p>}
           {s.keller.map((w) => {
-            const preis = marktPreis(w.rebsorte, w.qualitaet, w.jahrgang, s.jahr) * (w.preisFaktor ?? 1);
+            const preis = marktPreis(w.rebsorte, w.qualitaet, w.jahrgang, s.jahr, w.marktFaktor) * (w.preisFaktor ?? 1);
             return (
               <div key={w.id} className="wein">
                 <strong>{REBSORTEN[w.rebsorte].name} {w.jahrgang}</strong>

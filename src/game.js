@@ -122,14 +122,17 @@ export function neuesWetter() {
   return { ...WETTER[Math.floor(Math.random() * WETTER.length)] };
 }
 
-export function marktPreis(rebsorte, qualitaet, jahrgang, aktuellesJahr) {
+export function marktPreis(rebsorte, qualitaet, jahrgang, aktuellesJahr, marktFaktor = 1) {
   const sorte = REBSORTEN[rebsorte];
   const alter = aktuellesJahr - jahrgang;
   const reifungsFaktor = 1 + Math.min(alter, 5) * 0.08;
   const qualitaetsFaktor = 0.5 + (qualitaet / 100) * 1.5;
   const basis = 4 * sorte.preisFaktor;
-  const schwank = zufall(0.85, 1.2);
-  return Math.max(0.5, Math.round(basis * qualitaetsFaktor * reifungsFaktor * schwank * 100) / 100);
+  return Math.max(0.5, Math.round(basis * qualitaetsFaktor * reifungsFaktor * marktFaktor * 100) / 100);
+}
+
+export function neuerMarktFaktor() {
+  return zufall(0.85, 1.2);
 }
 
 export function neuesEvent() {
